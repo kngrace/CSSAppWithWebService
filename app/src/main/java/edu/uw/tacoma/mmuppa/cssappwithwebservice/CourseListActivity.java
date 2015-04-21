@@ -1,5 +1,6 @@
 package edu.uw.tacoma.mmuppa.cssappwithwebservice;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class CourseListActivity extends ActionBarActivity {
     private static final String COURSE_URL
             = "http://cssgate.insttech.washington.edu/~mmuppa/Android/test.php?cmd=courses";
     private String mCourses;
+    private ProgressDialog mProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,14 @@ public class CourseListActivity extends ActionBarActivity {
      * Code adapted from http://www.vogella.com/tutorials/AndroidBackgroundProcessing/article.html
      */
     private class DownloadWebPageTask extends AsyncTask<String, Void, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mProgressDialog = ProgressDialog.show(CourseListActivity.this, "Wait", "Downloading...");
+        }
+
         @Override
         protected String doInBackground(String... urls) {
             String response = "";
@@ -119,6 +129,7 @@ public class CourseListActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            mProgressDialog.dismiss();
             mCourses = result;
             if (mCourses != null) {
                 try {
